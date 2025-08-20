@@ -74,24 +74,24 @@ Pebbles folder -> Project older (For info puposes.. makes it easier to clone) <b
   - _project-throws_
   ```json
   {
-    "throw-id": 10 digit random,
-    "last-throw-id" : Previous 10 digit random,
+    "throw-id": 1234567890,
+    "last-throw-id": 0987654321,
     "files-changed": {
-        "Added" : [],
-        "Modified": [],
-        "Deleted": [],
+      "Added": [],
+      "Modified": [],
+      "Deleted": []
     },
-    "contents" : {"file-path/name": "Full Content print("Hello World")"},
-    "throw-msg" : "It's over Anakin! I have the high ground!"
+    "contents": { "file-path/name": "Full Content print('Hello World')" },
+    "throw-msg": "It's over Anakin! I have the high ground!"
   }
   ```
   - _project-track_
   ```json
   {
-    "last commit" : Provious 10 digit random,
-    "Added" : [],
-    "Modified" : [],
-    "Deleted" : []
+    "last commit": 0987654321,
+    "Added": [],
+    "Modified": [],
+    "Deleted": []
   }
   ```
 
