@@ -40,20 +40,33 @@
             - Any Error -> "Unasble to initiate Pebble: <error message>"
 """
 
+# Imports
+from dotenv import load_dotenv
+import os
+import json
+import hashlib
+from tinydb import TinyDB
+
+# Load environment variables
+load_dotenv()
+main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
+
 
 def check_project_exists(project_name, main_pebbles_path) -> bool:
     """
     Check if a project with the given name already exists in the main Pebbles database.
     
     Args:
-        project_name (str): The name of the project to check.
+        project_name (str): The name of the project to check. 
+                            File to look for -> project_name_info.json in the main Pebbles directory.
         main_pebbles_path (str): The path to the main Pebbles database (TinyDB or JSON).
     
     Returns:
         bool: True if the project exists, False otherwise.
     """
-    # Implementation goes here
-    return False  # Placeholder return value
+    file_name = f"{project_name}_info.json"
+    file_path = os.path.join(main_pebbles_path, file_name)
+    return os.path.isfile(file_path)
 
 
 def register_project_in_main(project_name, project_path, main_pebbles_path, desc="") -> bool:
@@ -69,8 +82,20 @@ def register_project_in_main(project_name, project_path, main_pebbles_path, desc
     Returns:
         bool: True if registration was successful, False otherwise.
     """
-    # Implementation goes here
-    return True  # Placeholder return value
+    file_name = f"{project_name}_info.json"
+    file_path = os.path.join(main_pebbles_path, file_name)
+    try:
+        db = TinyDB(file_path)
+        db.insert({
+            "folder_location": project_path,
+            "head_commit": None,
+            "desc": desc
+        })
+        db.close()
+        return True
+    except Exception as e:
+        print(f"Error registering project: {e}")
+        return False
 
 
 def create_pebble_folder(project_path) -> bool:
@@ -173,3 +198,18 @@ def print_init_error(error_message):
         error_message (str): The error message to display.
     """
     print(f"Unable to initiate Pebble: {error_message}")
+
+
+
+# Example usage
+project_name = "example_project"
+project_path = "E:/Projects/Pebbles/example_project"
+Description = "This is an example project."
+reg = register_project_in_main(project_name, project_path, main_pebbles_path, Description)
+if reg: 
+    if (check_project_exists(project_name, main_pebbles_path)):
+        print("Project created!")
+    else:
+        print("Project not created!")
+else:
+    print("Failed to register project in main Pebbles database.")
