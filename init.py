@@ -20,7 +20,7 @@
         create_project_info_file(project_path, project_name, desc="")
             - TinyDB file inside .pebble (e.g., .pebble/project-info.json).
             - Stores project metadata (date, head commit, desc, file hashes).
-        create_project_throws_file(project_path)
+        create_project_throws_file(project_path, project_name)
             - Empty TinyDB file for all commits (“throws”).
         create_project_track_file(project_path)
             - Empty TinyDB file for tracking staged files.
@@ -28,7 +28,10 @@
     4. File Hashing + Initial State
         scan_project_files(project_path)
             - Walk through all files (excluding .pebble).
-            - Generate hashes.
+            - Exclude files listed in .pebbleignore/pebbleignore.
+            - generate_file_hash(file_path)
+                - For each file, read its content and generate a SHA-256 hash.
+                - return hash string.
             - Return dict: { "file-path": "hash" }.
         store_initial_file_state(project_path, file_hashes)
             - Save this into project-info.json (TinyDB doc).
@@ -46,11 +49,13 @@ import os
 import json
 import hashlib
 from tinydb import TinyDB
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
 main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
 
+#----------------------------------------------------------------------------------------------------------
 
 def check_project_exists(project_name, main_pebbles_path) -> bool:
     """
@@ -68,6 +73,7 @@ def check_project_exists(project_name, main_pebbles_path) -> bool:
     file_path = os.path.join(main_pebbles_path, file_name)
     return os.path.isfile(file_path)
 
+#----------------------------------------------------------------------------------------------------------
 
 def register_project_in_main(project_name, project_path, main_pebbles_path, desc="") -> bool:
     """
@@ -97,6 +103,7 @@ def register_project_in_main(project_name, project_path, main_pebbles_path, desc
         print(f"Error registering project: {e}")
         return False
 
+#----------------------------------------------------------------------------------------------------------
 
 def create_pebble_folder(project_path) -> bool:
     """
@@ -108,8 +115,15 @@ def create_pebble_folder(project_path) -> bool:
     Returns:
         bool: True if registration was successful, False otherwise.
     """
-    # Implementation goes here
-    return True  # Placeholder return value
+    try:
+        pebble_dir = os.path.join(project_path, ".pebble")
+        os.makedirs(pebble_dir, exist_ok=True)
+        return True
+    except Exception as e:
+        print(f"Error creating .pebble directory: {e}")
+        return False
+    
+#----------------------------------------------------------------------------------------------------------
 
 def create_project_info_file(project_path, project_name, desc="") -> bool:
     """
@@ -123,10 +137,26 @@ def create_project_info_file(project_path, project_name, desc="") -> bool:
     Returns:
         bool: True if the file was created successfully, False otherwise.
     """
-    # Implementation goes here
-    return True  # Placeholder return value
+    file_name = f"{project_name}_info.json"
+    file_path = os.path.join(project_path, ".pebble", file_name)
+    try:
+        db = TinyDB(file_path)
+        db.insert({
+            "project_name" : project_name,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "head_commit": None,
+            "file_hashes": {},
+            "desc": desc
+        })
+        db.close()
+        return True
+    except Exception as e:
+        print(f"Error creating project info file: {e}")
+        return False
 
-def create_project_throws_file(project_path) -> bool:
+#----------------------------------------------------------------------------------------------------------
+
+def create_project_throws_file(project_path, project_name) -> bool:
     """
     Create an empty TinyDB file for all commits ("throws") inside the .pebble directory.
     
@@ -136,8 +166,17 @@ def create_project_throws_file(project_path) -> bool:
     Returns:
         bool: True if the file was created successfully, False otherwise.
     """
-    # Implementation goes here
+    file_name = f"{project_name}_throws.json"
+    file_path = os.path.join(project_path, ".pebble", file_name)
+    try:
+        db = TinyDB(file_path)
+        db.close()  # Create an empty file
+        return True
+    except Exception as e:
+        print(f"Error creating project throws file: {e}")
     return True  # Placeholder return value
+
+#----------------------------------------------------------------------------------------------------------
 
 def create_project_track_file(project_path) -> bool:
     """
@@ -149,8 +188,17 @@ def create_project_track_file(project_path) -> bool:
     Returns:
         bool: True if the file was created successfully, False otherwise.
     """
-    # Implementation goes here
-    return True  # Placeholder return value
+    file_name = "track.json"
+    file_path = os.path.join(project_path, ".pebble", file_name)
+    try:
+        db = TinyDB(file_path)
+        db.close()  # Create an empty file
+        return True
+    except Exception as e:
+        print(f"Error creating project track file: {e}")
+        return False
+
+#----------------------------------------------------------------------------------------------------------
 
 def scan_project_files(project_path) -> dict:
     """
@@ -162,8 +210,33 @@ def scan_project_files(project_path) -> dict:
     Returns:
         dict: A dictionary mapping file paths to their hashes.
     """
-    # Implementation goes here
+    
     return {}  # Placeholder return value
+
+#----------------------------------------------------------------------------------------------------------
+
+def generate_file_hash(file_path) -> str:
+    """
+    Generate a SHA-256 hash for a given file.
+    
+    Args:
+        file_path (str): The path to the file to hash.
+    
+    Returns:
+        str: The SHA-256 hash of the file.
+    """
+    hasher = hashlib.sha256()
+    try:
+        with open(file_path, 'rb') as f:
+            # It reads the file in chunks of 8192 bytes (8 KB) at a time. (Better for large files)
+            while chunk := f.read(8192):
+                hasher.update(chunk)
+        return hasher.hexdigest()
+    except Exception as e:
+        print(f"Error hashing file {file_path}: {e}")
+        return ""
+    
+#----------------------------------------------------------------------------------------------------------
 
 def store_initial_file_state(project_path, file_hashes) -> bool:
     """
@@ -180,6 +253,8 @@ def store_initial_file_state(project_path, file_hashes) -> bool:
     # Implementation goes here
     return True  # Placeholder return value
 
+#----------------------------------------------------------------------------------------------------------
+
 def print_init_success(project_name, project_path):
     """
     Print a success message after initializing the Pebble project.
@@ -190,6 +265,8 @@ def print_init_success(project_name, project_path):
     """
     print(f"Pebble successfully initiated for project '{project_name}' at '{project_path}'!")
 
+#----------------------------------------------------------------------------------------------------------
+
 def print_init_error(error_message):
     """
     Print an error message if the Pebble project initialization fails.
@@ -199,17 +276,20 @@ def print_init_error(error_message):
     """
     print(f"Unable to initiate Pebble: {error_message}")
 
+#----------------------------------------------------------------------------------------------------------
+
 
 
 # Example usage
-project_name = "example_project"
-project_path = "E:/Projects/Pebbles/example_project"
-Description = "This is an example project."
-reg = register_project_in_main(project_name, project_path, main_pebbles_path, Description)
-if reg: 
-    if (check_project_exists(project_name, main_pebbles_path)):
-        print("Project created!")
-    else:
-        print("Project not created!")
-else:
-    print("Failed to register project in main Pebbles database.")
+# project_name = "example_project"
+# project_path = "E:/Projects/Pebbles/example_project"
+# Description = "This is an example project."
+# reg = register_project_in_main(project_name, project_path, main_pebbles_path, Description)
+# if reg: 
+#     if (check_project_exists(project_name, main_pebbles_path)):
+#         print("Project created!")
+#     else:
+#         print("Project not created!")
+# else:
+#     print("Failed to register project in main Pebbles database.")
+
