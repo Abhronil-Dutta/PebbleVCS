@@ -25,19 +25,7 @@
         create_project_track_file(project_path)
             - Empty TinyDB file for tracking staged files.
 
-    4. File Hashing + Initial State
-        scan_project_files(project_path)
-            - Walk through all files (excluding .pebble).
-            - Exclude files listed in .pebbleignore/pebbleignore.
-            - generate_file_hash(file_path)
-                - For each file, read its content and generate a SHA-256 hash.
-                - return hash string.
-            - Return dict: { "file-path": "hash" }.
-        store_initial_file_state(project_path, file_hashes)
-            - Save this into project-info.json (TinyDB doc).
-            - head = null initially.
-
-    5. Confirmation
+    4. Confirmation
         print_init_success(project_name, project_path)
             - User feedback -> "Pebble successfully initiated!!"
             - Any Error -> "Unasble to initiate Pebble: <error message>"
@@ -54,6 +42,7 @@ from datetime import datetime
 # Load environment variables
 load_dotenv()
 main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
+example_project_path = os.getenv("EXAMPLE_PROJECT_PATH")
 
 #----------------------------------------------------------------------------------------------------------
 
@@ -200,61 +189,6 @@ def create_project_track_file(project_path) -> bool:
 
 #----------------------------------------------------------------------------------------------------------
 
-def scan_project_files(project_path) -> dict:
-    """
-    Scan all files in the project directory (excluding .pebble and the files listed in .pebbleignore/pebbleignore) and generate their hashes.
-    
-    Args:
-        project_path (str): The full path to the project folder.
-    
-    Returns:
-        dict: A dictionary mapping file paths to their hashes.
-    """
-    
-    return {}  # Placeholder return value
-
-#----------------------------------------------------------------------------------------------------------
-
-def generate_file_hash(file_path) -> str:
-    """
-    Generate a SHA-256 hash for a given file.
-    
-    Args:
-        file_path (str): The path to the file to hash.
-    
-    Returns:
-        str: The SHA-256 hash of the file.
-    """
-    hasher = hashlib.sha256()
-    try:
-        with open(file_path, 'rb') as f:
-            # It reads the file in chunks of 8192 bytes (8 KB) at a time. (Better for large files)
-            while chunk := f.read(8192):
-                hasher.update(chunk)
-        return hasher.hexdigest()
-    except Exception as e:
-        print(f"Error hashing file {file_path}: {e}")
-        return ""
-    
-#----------------------------------------------------------------------------------------------------------
-
-def store_initial_file_state(project_path, file_hashes) -> bool:
-    """
-    Store the initial file state in the project info file.
-    Sets the head commit to None initially.
-    
-    Args:
-        project_path (str): The full path to the project folder.
-        file_hashes (dict): A dictionary mapping file paths to their hashes.
-    
-    Returns:
-        bool: True if the initial state was stored successfully, False otherwise.
-    """
-    # Implementation goes here
-    return True  # Placeholder return value
-
-#----------------------------------------------------------------------------------------------------------
-
 def print_init_success(project_name, project_path):
     """
     Print a success message after initializing the Pebble project.
@@ -277,19 +211,46 @@ def print_init_error(error_message):
     print(f"Unable to initiate Pebble: {error_message}")
 
 #----------------------------------------------------------------------------------------------------------
+# Main function to initialize a new Pebble project
+#----------------------------------------------------------------------------------------------------------
 
+def init(project_name, project_path, desc=""):
+    """
+    Initialize a new Pebble project.
+    
+    Args:
+        project_name (str): The name of the project.
+        project_path (str): The full path to the project folder.
+        desc (str): A description of the project (optional).
+    
+    Returns:
+        bool: True if initialization was successful, False otherwise.
+    """
+    if check_project_exists(project_name, main_pebbles_path):
+        print_init_error(f"Project '{project_name}' already exists.")
+        return False
+    
+    if not register_project_in_main(project_name, project_path, main_pebbles_path, desc):
+        print_init_error("Failed to register project in main Pebbles database.")
+        return False
+    
+    if not create_pebble_folder(project_path):
+        print_init_error("Failed to create .pebble directory.")
+        return False
+    
+    if not create_project_info_file(project_path, project_name, desc):
+        print_init_error("Failed to create project info file.")
+        return False
+    
+    if not create_project_throws_file(project_path, project_name):
+        print_init_error("Failed to create project throws file.")
+        return False
+    
+    if not create_project_track_file(project_path):
+        print_init_error("Failed to create project track file.")
+        return False
+    
+    print_init_success(project_name, project_path)
+    return True
 
-
-# Example usage
-# project_name = "example_project"
-# project_path = "E:/Projects/Pebbles/example_project"
-# Description = "This is an example project."
-# reg = register_project_in_main(project_name, project_path, main_pebbles_path, Description)
-# if reg: 
-#     if (check_project_exists(project_name, main_pebbles_path)):
-#         print("Project created!")
-#     else:
-#         print("Project not created!")
-# else:
-#     print("Failed to register project in main Pebbles database.")
-
+#----------------------------------------------------------------------------------------------------------
