@@ -214,7 +214,7 @@ def print_init_error(error_message):
 # Main function to initialize a new Pebble project
 #----------------------------------------------------------------------------------------------------------
 
-def init(project_name, project_path, desc=""):
+def init(project_name, project_path, desc="") -> bool:
     """
     Initialize a new Pebble project.
     

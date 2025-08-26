@@ -123,3 +123,44 @@ So final command :-
 ```bash
 pebbles init "project-name" -d "Description (Optional)"
 ```
+
+## gather
+
+checks the whole project directory and checks the changed files. then categorises them into added, modified and deleted.
+
+### Function Structure
+
+```py
+gather(project_path, folders_list = [])
+```
+
+### Parameters:
+
+- project_path (str): Path to the root of the project.
+- folders_list (list, optional): List of specific folders to scan. If empty, the entire project is scanned.
+
+Scans the files in the project_path. <br>
+It has 3 categories to put files in
+
+- Added
+- Modified
+- Deleted
+
+Scans and generates hashes for the files, sets them in a directory then compares with file_hashes in {project_info} <br>
+
+- If a file is in project-info and not in dictionary.. its categorized as added
+- If a file is in project-info and in dictionary but their hashes are different.. its categorized as modified
+- If a file is in project-info but not in dictionary.. its categorized as deleted (only add deleted if folders_list is empty i.e. scans the whole project)
+
+then take the head from the 'project_info'
+and add the track to track.json using tinydb
+
+### CLI (TODO)
+
+project path -> from where the cmd is ran,
+. -> for all files
+specific file path separated by space
+
+```bash
+pebbles gather .
+```
