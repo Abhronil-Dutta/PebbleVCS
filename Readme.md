@@ -164,3 +164,36 @@ specific file path separated by space
 ```bash
 pebbles gather .
 ```
+
+## throw
+
+1. Generates a throw id (10 digit random.. 0-9, a-z, A-z)
+2. Checks the track.json for tracked files.
+3. Takes the file hashes in the tracked files and updates the project_name_info.json
+   - adds new files and hashes
+   - changes the modified files and hashes
+   - deletes the files and hashes of the deleted files
+4. scans the new and changed files and creates a throw object
+   - throw id:
+   - last throw id -
+   - files changed -
+     - added : []
+     - updated : []
+     - deleted : []
+   - content {
+     "filepath" : "file content full" (just the added and the modified ones)
+     }
+5. Updates the head in project_info
+6. Update everything in the main Pebbles folder
+
+### Function Structure
+
+```py
+throw(project_path, pebbles_path, message=""):
+```
+
+### CLI (TODO)
+
+```bash
+pebble throw -m ""
+```
