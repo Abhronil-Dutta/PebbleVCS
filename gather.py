@@ -198,6 +198,6 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
 
 
 # Example usage:
-path = "E:\\ai"
-result = gather(path, ["example"])
-print(json.dumps(result, indent=4))
+# path = "E:\\ai"
+# result = gather(path, ["example"])
+# print(json.dumps(result, indent=4))
