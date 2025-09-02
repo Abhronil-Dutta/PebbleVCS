@@ -57,7 +57,7 @@ def _normalize_path(path: str) -> str:
     It returns a dictionary with the previous file hashes and the head commit.
 """
 def _load_project_info(project_path: str, project_name: str) -> Dict[str, Any]:
-    info_path = os.path.join(project_path, ".pebble", f"{project_name}_info.json")
+    info_path = os.path.join(project_path, ".pebble", "project_info.json")
     db = TinyDB(info_path)
     if len(db) == 0:
         db.close()
@@ -156,10 +156,17 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
     pebble_dir = os.path.join(project_path, ".pebble")
     if not os.path.isdir(pebble_dir):
         raise Exception(".pebble folder not found in project path")
-    info_files = [f for f in os.listdir(pebble_dir) if f.endswith("_info.json")]
-    if not info_files:
+    info_path = os.path.join(pebble_dir, "project_info.json")
+    if not os.path.isfile(info_path):
         raise Exception("No project info file found in .pebble folder")
-    project_name = info_files[0].replace("_info.json", "")
+    # Load project_name from info file
+    db = TinyDB(info_path)
+    if len(db) == 0:
+        db.close()
+        raise Exception("Project info file is empty")
+    info = db.all()[0]
+    project_name = info.get("project_name", "")
+    db.close()
     baseline = _load_project_info(project_path, project_name)
     prev_hashes = baseline["file_hashes"]
     head = baseline["head_commit"]
@@ -195,9 +202,3 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
         "deleted": deleted,
         "last_commit": head
     }
-
-
-# Example usage:
-# path = "E:\\ai"
-# result = gather(path, ["example"])
-# print(json.dumps(result, indent=4))

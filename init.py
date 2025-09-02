@@ -117,16 +117,14 @@ def create_pebble_folder(project_path) -> bool:
 def create_project_info_file(project_path, project_name, desc="") -> bool:
     """
     Create a project info file inside the .pebble directory.
-    
     Args:
         project_path (str): The full path to the project folder.
         project_name (str): The name of the project.
         desc (str): A description of the project (optional).
-    
     Returns:
         bool: True if the file was created successfully, False otherwise.
     """
-    file_name = f"{project_name}_info.json"
+    file_name = "project_info.json"  # Changed from f"{project_name}_info.json"
     file_path = os.path.join(project_path, ".pebble", file_name)
     try:
         db = TinyDB(file_path)
@@ -148,14 +146,12 @@ def create_project_info_file(project_path, project_name, desc="") -> bool:
 def create_project_throws_file(project_path, project_name) -> bool:
     """
     Create an empty TinyDB file for all commits ("throws") inside the .pebble directory.
-    
     Args:
         project_path (str): The full path to the project folder.
-    
     Returns:
         bool: True if the file was created successfully, False otherwise.
     """
-    file_name = f"{project_name}_throws.json"
+    file_name = "project_throws.json"  # Changed from f"{project_name}_throws.json"
     file_path = os.path.join(project_path, ".pebble", file_name)
     try:
         db = TinyDB(file_path)
@@ -163,7 +159,7 @@ def create_project_throws_file(project_path, project_name) -> bool:
         return True
     except Exception as e:
         print(f"Error creating project throws file: {e}")
-    return True  # Placeholder return value
+        return False
 
 #----------------------------------------------------------------------------------------------------------
 
