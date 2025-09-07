@@ -151,7 +151,6 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
     Returns:
         dict: Results with added, modified, deleted files and last commit.
     """
-    print(project_path)
     project_path = _normalize_path(project_path)
     pebble_dir = os.path.join(project_path, ".pebble")
     if not os.path.isdir(pebble_dir):
@@ -202,3 +201,5 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
         "deleted": deleted,
         "last_commit": head
     }
+
+print(gather("E:/ai"))

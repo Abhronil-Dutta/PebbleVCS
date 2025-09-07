@@ -250,3 +250,5 @@ def init(project_name, project_path, desc="") -> bool:
     return True
 
 #----------------------------------------------------------------------------------------------------------
+
+init("ai", example_project_path, "Example AI project")
