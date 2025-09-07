@@ -268,7 +268,3 @@ def throw(project_path: str, commit_message: str, folders_list: list = [], main_
         confirmation_message(throw_id)
     except Exception as e:
         print(f"Unable to create throw: {str(e)}")
-
-project_path = "E:/ai"
-commit_message = "lets see commit 2"
-throw(project_path, commit_message)
