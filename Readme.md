@@ -197,3 +197,5 @@ throw(project_path, pebbles_path, message=""):
 ```bash
 pebble throw -m ""
 ```
+
+## **Pebble clone**
