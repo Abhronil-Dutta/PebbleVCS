@@ -273,3 +273,4 @@ def throw(project_path: str, commit_message: str, folders_list: list = [], main_
     except Exception as e:
         print(f"Unable to create throw: {str(e)}")
 
+throw("E:/C and C++", "Initial commit")

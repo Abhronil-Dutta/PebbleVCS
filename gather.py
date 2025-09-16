@@ -201,3 +201,5 @@ def gather(project_path: str, folders_list: List[str] = []) -> Dict[str, Any]:
         "deleted": deleted,
         "last_commit": head
     }
+
+gather("E:/C and C++")

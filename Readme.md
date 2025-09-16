@@ -6,14 +6,14 @@ _A simple, offline version control system (like Git, but intentionally minimal a
 
 ## 🚀 Core Commands
 
-| Command           | Description                                 |
-|-------------------|---------------------------------------------|
-| `pebble init`     | Start a new project                         |
-| `pebble gather`   | Stage files (detect changes)                |
-| `pebble throw`    | Commit staged changes                       |
-| `pebble reset`    | Undo last throw                             |
-| `pebble delete`   | Remove a project from Pebbles               |
-| `pebble clone`    | Copy an existing Pebble project             |
+| Command         | Description                     |
+| --------------- | ------------------------------- |
+| `pebble init`   | Start a new project             |
+| `pebble gather` | Stage files (detect changes)    |
+| `pebble throw`  | Commit staged changes           |
+| `pebble reset`  | Undo last throw                 |
+| `pebble delete` | Remove a project from Pebbles   |
+| `pebble clone`  | Copy an existing Pebble project |
 
 ---
 
@@ -36,11 +36,13 @@ _A simple, offline version control system (like Git, but intentionally minimal a
 Creates a `.pebble` folder in your project directory and registers the project in the main Pebbles folder.
 
 **Creates:**
+
 - `.pebble/project_info.json` — Project metadata
 - `.pebble/project_throws.json` — All throws (commits)
 - `.pebble/track.json` — Staged files
 
 **Example project_info.json:**
+
 ```json
 {
   "project_name": "MyProject",
@@ -52,11 +54,13 @@ Creates a `.pebble` folder in your project directory and registers the project i
 ```
 
 **Function:**
+
 ```python
 init(project_path, main_pebbles_folder_path, project_name, desc="")
 ```
 
 **CLI:**
+
 ```bash
 pebble init "project-name" -d "Description (Optional)"
 ```
@@ -68,11 +72,13 @@ pebble init "project-name" -d "Description (Optional)"
 Scans the project directory for changes and categorizes files as Added, Modified, or Deleted. Updates `.pebble/track.json` accordingly.
 
 **Function:**
+
 ```python
 gather(project_path, folders_list=[])
 ```
 
 **CLI:**
+
 ```bash
 pebble gather .
 ```
@@ -84,11 +90,13 @@ pebble gather .
 Creates a new throw (commit) with a unique throw ID, saves file contents, and updates project metadata.
 
 **Function:**
+
 ```python
 throw(project_path, pebbles_path, message="")
 ```
 
 **CLI:**
+
 ```bash
 pebble throw -m "Commit message"
 ```
@@ -97,20 +105,23 @@ pebble throw -m "Commit message"
 
 ## 🟤 `reset` — Undo Last Throw
 
-Reverts the project to the previous throw (commit).
+Restores the project to the exact state of the current head commit by replaying all throws from the beginning.
 
 **How it works:**
-1. Loads the current head throw from `.pebble/project_info.json`.
-2. Finds the previous throw using `last_throw_id` in `.pebble/project_throws.json`.
-3. Restores all files to the state of the previous throw.
-4. Updates `.pebble/project_info.json` to set the new head and file hashes.
+
+1. Loads all throws from `.pebble/project_throws.json` and the current head commit from `.pebble/project_info.json`.
+2. Replays each throw in order, applying all additions, modifications, and deletions, to reconstruct the full project state at the head commit.
+3. Restores all files in the working directory to match the reconstructed state, and deletes any files that should not exist (unless ignored).
+4. Updates `.pebble/project_info.json` to set the head and file hashes to match the reconstructed state.
 
 **Function:**
+
 ```python
-reset(project_path)
+reset_to_head_commit(project_path)
 ```
 
 **CLI:**
+
 ```bash
 pebble reset
 ```
@@ -126,6 +137,7 @@ Removes a project from the Pebbles database. (Details: TODO)
 ## 🧩 Data File Examples
 
 **project_info.json**
+
 ```json
 {
   "project_name": "MyProject",
@@ -139,6 +151,7 @@ Removes a project from the Pebbles database. (Details: TODO)
 ```
 
 **project_throws.json**
+
 ```json
 {
   "throw_id": "abc123def4",
@@ -157,6 +170,7 @@ Removes a project from the Pebbles database. (Details: TODO)
 ```
 
 **track.json**
+
 ```json
 {
   "added": ["src/main.py"],
