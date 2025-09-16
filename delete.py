@@ -1,3 +1,12 @@
+"""
+It asks the user for confirmation twice (YES required both times).
+It reads the project name from .pebble/project_info.json.
+It deletes the corresponding info file from the main Pebbles folder.
+It deletes the .pebble directory in the project.
+It prints status messages for each step.
+
+"""
+
 import os
 import shutil
 from tinydb import TinyDB
@@ -49,3 +58,5 @@ def delete_project(project_path: str, main_pebbles_path: str = None):
     else:
         print(f".pebble directory not found at {pebble_dir}.")
     print("Project deleted.")
+
+delete_project("E:/C and C++")
