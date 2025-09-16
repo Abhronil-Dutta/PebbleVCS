@@ -40,6 +40,10 @@ import os
 import json
 
 from gather import _load_project_info
+from dotenv import load_dotenv
+import os
+load_dotenv()
+main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
 
 def generate_throw_id(length=10) -> str:
     """Generate a secure random throw id of specified length."""
@@ -180,7 +184,7 @@ def confirmation_message(throw_id: str):
     """Print a success message with the throw id."""
     print(f"Throw created successfully with ID: {throw_id}")
 
-def throw(project_path: str, commit_message: str, folders_list: list = [], main_pebbles_path: str = "E:\\Projects\\Pebbles"):
+def throw(project_path: str, commit_message: str, folders_list: list = [], main_pebbles_path: str = main_pebbles_path):
     try:
         project_path = os.path.abspath(project_path)
         pebble_dir = os.path.join(project_path, ".pebble")
@@ -268,3 +272,4 @@ def throw(project_path: str, commit_message: str, folders_list: list = [], main_
         confirmation_message(throw_id)
     except Exception as e:
         print(f"Unable to create throw: {str(e)}")
+

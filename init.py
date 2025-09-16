@@ -42,7 +42,6 @@ from datetime import datetime
 # Load environment variables
 load_dotenv()
 main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
-example_project_path = os.getenv("EXAMPLE_PROJECT_PATH")
 
 #----------------------------------------------------------------------------------------------------------
 
