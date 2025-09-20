@@ -130,7 +130,54 @@ pebble reset
 
 ## 🗑️ `delete` — Remove a Project
 
-Removes a project from the Pebbles database. (Details: TODO)
+Securely removes a project from the Pebbles database and your local machine.
+
+**How it works:**
+
+1. Asks for confirmation twice (`YES` required both times).
+2. Reads the project name from `.pebble/project_info.json` in the project directory.
+3. Deletes the corresponding info file from the main Pebbles folder (e.g., `{project_name}_info.json`).
+4. Deletes the `.pebble` directory in the project folder.
+5. Prints status messages for each step.
+
+**Function:**
+
+```python
+delete_project(project_path)
+```
+
+**CLI:**
+
+```bash
+pebble delete
+```
+
+---
+
+## 🟣 `clone` — Copy an Existing Project
+
+Creates a new, independent project by reconstructing the state of another project at its head commit.
+
+**How it works:**
+
+1. Asks for the project name to clone.
+2. Looks up the project location in `{project_name}_info.json` in the main Pebbles folder.
+3. Reads the `.pebble/project_info.json` and `.pebble/project_throws.json` from the source project.
+4. Replays all throws in order to reconstruct the full project state at the head commit.
+5. Writes the reconstructed files to the destination directory (no `.pebble` folder is copied).
+6. The result is a new, independent project directory with the same files as the original at its latest commit, but with no version history or metadata.
+
+**Function:**
+
+```python
+clone_project(project_name, destination_path, main_pebbles_path)
+```
+
+**CLI:**
+
+```bash
+pebble clone "project-name" "destination-path"
+```
 
 ---
 

@@ -78,5 +78,3 @@ def clone_project(project_name: str, destination_path: str, main_pebbles_path: s
         with open(abs_path, "w", encoding="utf-8") as f:
             f.write(content)
     print(f"Project '{project_name}' cloned to {destination_path} as a new independent project.")
-
-clone_project("ai", "E:/Projects/ai_clone", "E:/Projects/Pebbles")
