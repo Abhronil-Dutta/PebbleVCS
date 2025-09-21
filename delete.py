@@ -59,4 +59,3 @@ def delete_project(project_path: str, main_pebbles_path: str = None):
         print(f".pebble directory not found at {pebble_dir}.")
     print("Project deleted.")
 
-delete_project("E:/C and C++")

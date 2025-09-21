@@ -249,5 +249,3 @@ def init(project_name, project_path, desc="") -> bool:
     return True
 
 #----------------------------------------------------------------------------------------------------------
-
-init("TestProject", "E:\C and C++", "This is a test project.")

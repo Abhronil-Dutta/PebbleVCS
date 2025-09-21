@@ -261,5 +261,3 @@ def reset_to_head_commit(project_path: str):
     db.close()
 
     print(f"Project reset to head commit {head_commit}.")
-
-reset_to_head_commit("E:/C and C++")
