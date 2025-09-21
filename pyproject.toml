@@ -1,0 +1,15 @@
+[project]
+name = "pebblevcs"
+version = "1.0.0"
+description = "Pebbles VCS - A minimal, local version control system"
+authors = [{name = "Abhronil Dutta"}]
+dependencies = [
+    "tinydb",
+    "python-dotenv"
+]
+
+[project.scripts]
+pebble = "pebble_cli:main"
+
+[tool.setuptools]
+py-modules = ["pebble_cli", "init", "gather", "throw", "reset", "delete", "clone"]
