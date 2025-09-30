@@ -5,7 +5,7 @@ import os
 from init import init
 from gather import gather
 from throw import throw
-from reset import reset
+from reset import reset_to_head_commit as reset
 from delete import delete_project
 from clone import clone_project
 from dotenv import load_dotenv
