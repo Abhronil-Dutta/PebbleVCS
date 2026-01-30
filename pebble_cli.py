@@ -78,7 +78,7 @@ def main():
     MAIN_PEBBLES_PATH = os.getenv("MAIN_PEBBLES_PATH")
 
     if args.command == "init":
-        init(args.project_path, MAIN_PEBBLES_PATH, args.project_path, desc=args.desc)
+        init(args.project_path, args.project_path, MAIN_PEBBLES_PATH, desc=args.desc)
     elif args.command == "gather":
         gather(args.project_path, args.folders)
     elif args.command == "throw":

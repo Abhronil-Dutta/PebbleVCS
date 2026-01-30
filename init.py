@@ -39,9 +39,8 @@ import hashlib
 from tinydb import TinyDB
 from datetime import datetime
 
-# Load environment variables
-load_dotenv()
-main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
+# Load environment variables (moved to pebble_cli.py)
+# main_pebbles_path = os.getenv("MAIN_PEBBLES_PATH")
 
 #----------------------------------------------------------------------------------------------------------
 
@@ -209,13 +208,14 @@ def print_init_error(error_message):
 # Main function to initialize a new Pebble project
 #----------------------------------------------------------------------------------------------------------
 
-def init(project_name, project_path, desc="") -> bool:
+def init(project_name, project_path, main_pebbles_path, desc="") -> bool:
     """
     Initialize a new Pebble project.
     
     Args:
         project_name (str): The name of the project.
         project_path (str): The full path to the project folder.
+        main_pebbles_path (str): The path to the main Pebbles database.
         desc (str): A description of the project (optional).
     
     Returns:
